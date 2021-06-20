@@ -137,16 +137,12 @@ def get_line(face_landmark, image, type="eye", debug=False):
 
 def get_points_on_chin(line, face_landmark, chin_type="chin"):
     chin = face_landmark[chin_type]
-#     print(f'len_chin: {len(chin)}')
     points_on_chin = []
     for i in range(len(chin) - 1):
         chin_first_point = [chin[i][0], chin[i][1]]
         chin_second_point = [chin[i + 1][0], chin[i + 1][1]]
-#         print(f'chin_first_point: {chin_first_point}')
-#         print(f'chin_second_point: {chin_second_point}')
+
         flag, x, y = line_intersection(line, (chin_first_point, chin_second_point))
-#         print(f'flag: {flag}')
-#         print(f'x,y: {(x,y)}')
         if flag:
             points_on_chin.append((x, y))
 
@@ -166,7 +162,7 @@ def line_intersection(line1, line2):
     start = 0
     end = -1
     line1 = ([line1[start][0], line1[start][1]], [line1[end][0], line1[end][1]])
-    line2 = ([line2[start][0], line2[start][1]], [line2[end][0], line2[end][1]])
+
     xdiff = (line1[0][0] - line1[1][0], line2[0][0] - line2[1][0])
     ydiff = (line1[0][1] - line1[1][1], line2[0][1] - line2[1][1])
     x = []
@@ -218,11 +214,8 @@ def get_six_points(face_landmark, image):
     face_b = m
 
     perp_line, _, _, _, _ = get_line(face_landmark, image, type="perp_line")
-#     print(f'perp_line: {perp_line}')
     points1 = get_points_on_chin(perp_line1, face_landmark)
-#     print(f'points1: {points1}')
     points = get_points_on_chin(perp_line, face_landmark)
-#     print(f'points: {points}')
     if not points1:
         face_e = tuple(np.asarray(points[0]))
     elif not points:
@@ -565,24 +558,23 @@ def shape_to_landmarks(shape):
         tuple(shape[16]),
     ]
     return face_landmarks
-def group(l, size):
-    return [tuple(l[i:i+size]) for i in range(0, len(l), size)]
+
 
 def rect_to_bb(rect):
     x1 = rect.left()
     x2 = rect.right()
     y1 = rect.top()
     y2 = rect.bottom()
-    return (y1, x1, y2, x2)
+    return (x1, x2, y2, x1)
 
 
-def mask_image(image_path, face_locations, list_landmark, args):
+def mask_image(image_path, args):
     # Read the image
     image = cv2.imread(image_path)
     original_image = image.copy()
     # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     gray = image
-#     face_locations = args.detector(gray, 1)
+    face_locations = args.detector(gray, 1)
     mask_type = args.mask_type
     verbose = args.verbose
     if args.code:
@@ -604,16 +596,12 @@ def mask_image(image_path, face_locations, list_landmark, args):
     mask_binary_array = []
     mask = []
     for (i, face_location) in enumerate(face_locations):
-#         shape = args.predictor(gray, face_location)
-#         shape = face_utils.shape_to_np(shape)
-        face_landmarks = shape_to_landmarks(list_landmark)
-#         print(face_landmarks)
-#         face_location = face_location
+        shape = args.predictor(gray, face_location)
+        shape = face_utils.shape_to_np(shape)
+        face_landmarks = shape_to_landmarks(shape)
+        face_location = rect_to_bb(face_location)
         # draw_landmarks(face_landmarks, image)
-        try:
-            six_points_on_face, angle = get_six_points(face_landmarks, image)
-        except:
-            continue
+        six_points_on_face, angle = get_six_points(face_landmarks, image)
         mask = []
         if mask_type != "all":
             if len(masked_images) > 0:

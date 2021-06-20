@@ -152,6 +152,24 @@ The detector above was trained on 2000 images (1000 mask, 1000 without mask) fro
 ## 3. Classify masks
 MaskTheFace generated dataset can be used to classify among masks using a deep network.
 
+## 4. Update
+- Input is a .csv file with format:
+
+| folder_name   | image _name   | kps _0| ...   | kps _67|
+| ------------- |:-------------:|:-----:|:-----:|:------:|
+| folder 1      | image 1.jpg   |       |       |        | 
+| folder 1      | image 2.jpg   |       |       |        |
+| ... 		| ...           |       |       |        |
+
+- Example:
+```python
+python mask_the_face_fix.py\
+	--csv_path 'path/to/csv/file'\
+	--root_path 'path/to/folder/image/'\
+	--mask-type 'random'\
+	--verbose\
+	--des_path 'path/to/save/folder/'
+```
 ## Citation
 If you find this repository useful, please use following citation
 ```
