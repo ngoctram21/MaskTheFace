@@ -8,7 +8,7 @@ MaskTheFace is computer vision-based script to mask faces in images. It uses a d
 It’s advisable to [make a new virtual environment](https://towardsdatascience.com/setting-up-python-platform-for-machine-learning-projects-cfd85682c54b) with Python 3.6 and install the dependencies. Following steps can be taken to download get started with MaskTheFace
 ### Clone the repository
 ```
-git clone https://github.com/aqeelanwar/MaskTheFace.git
+git clone https://github.com/ngoctram21/MaskTheFace.git
 ```
 
 ### Install required packages
